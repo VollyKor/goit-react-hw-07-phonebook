@@ -1,6 +1,6 @@
 import s from './Filter.module.css';
 
-export default function Filter({ setFilter, data: { filter } }) {
+export default function Filter({ setFilter, data: { filterQ } }) {
   const handleFilter = e => {
     setFilter(e.target.value);
   };
@@ -11,7 +11,7 @@ export default function Filter({ setFilter, data: { filter } }) {
         <input
           type="text"
           className={s.input}
-          value={filter}
+          value={filterQ}
           onChange={handleFilter}
         />
       </label>

@@ -1,6 +1,5 @@
 import s from './ContactList.module.css';
 export default function ContactList({ ContactList, removeContact }) {
-  // if (ContactList.lenght >)
   return (
     <div className="container">
       <ul className={s.list}>

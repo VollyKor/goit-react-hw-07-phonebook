@@ -3,7 +3,13 @@ import React, { useState, useEffect } from 'react';
 import Form from './Components/Form/Form';
 import ContactList from './Components/ContactList/ContactList';
 import Filter from './Components/Filter/Filter';
-
+import { connect } from 'react-redux';
+import {
+  addContactR,
+  deleteContactR,
+  setFilterR,
+  setContactR,
+} from './redux/phonebook/phonebook-actions';
 // For id gen
 // import { v4 as uuidv4 } from 'uuid';
 // uuidv4();
@@ -15,17 +21,28 @@ const testContacts = [
   { id: 'id-4', name: 'Annie Copeland', phoneNumber: '227-91-26' },
 ];
 
-function App() {
-  const [contacts, setContacts] = useState(() => [...testContacts]);
-  const [filterQuery, setFilter] = useState('');
+function App(props) {
+  const {
+    contacts,
+    filterQ,
+    onAddContact,
+    onDeleteContact,
+    onSetFilter,
+    onSetContacts,
+  } = props;
+
+  // const [contacts, setContacts] = useState(() => [...testContacts]);
+  // const [filterQuery, setFilter] = useState('');
+
+  // Получить контакты и фильтр
 
   // get items from ls on first render
   useEffect(() => {
     if (localStorage.getItem('contacts') !== null) {
       const data = JSON.parse(localStorage.getItem('contacts'));
-      setContacts(data);
+      onSetContacts(data);
     }
-  }, []);
+  }, [onSetContacts]);
 
   // add items to ls
   useEffect(() => {
@@ -41,11 +58,11 @@ function App() {
       alert(`${newContact.name} is already in contacts`);
       return;
     }
-    setContacts(prevState => [...prevState, newContact]);
+    onAddContact(newContact);
   };
-
+  console.log(contacts);
   const visibleContacts = () => {
-    const filtered = filterQuery.toLowerCase();
+    const filtered = filterQ.toLowerCase();
     const filteredArr = contacts.filter(({ name }) =>
       name.toLowerCase().includes(filtered),
     );
@@ -54,8 +71,8 @@ function App() {
 
   const removeContact = idToRemove => {
     console.log('remove Contact');
-    const newContactsArray = contacts.filter(({ id }) => id !== idToRemove);
-    setContacts(newContactsArray);
+    // const newContactsArray = contacts.filter(({ id }) => id !== idToRemove);
+    onDeleteContact(idToRemove);
   };
 
   return (
@@ -63,7 +80,7 @@ function App() {
       <h1>Phone Book</h1>
       <Form onSubmit={addContact} />
       <h2>Contact List</h2>
-      <Filter data={{ contacts, filterQuery }} setFilter={setFilter} />
+      <Filter data={{ contacts, filterQ }} setFilter={onSetFilter} />
       <ContactList
         ContactList={visibleContacts()}
         removeContact={removeContact}
@@ -72,4 +89,18 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = ({ phonebook: { contacts, filterQ } }) => ({
+  contacts,
+  filterQ,
+});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onAddContact: newContact => dispatch(addContactR(newContact)),
+    onDeleteContact: contactId => dispatch(deleteContactR(contactId)),
+    onSetFilter: value => dispatch(setFilterR(value)),
+    onSetContacts: contactArr => dispatch(setContactR(contactArr)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
