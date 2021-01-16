@@ -2,28 +2,30 @@ import s from './Form.module.css';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function Form({ onSubmit }) {
+import { getContacts } from '../../redux/phonebook/phonebook-selectors';
+import { addContactR } from '../../redux/phonebook/phonebook-actions';
+import { useSelector, useDispatch } from 'react-redux';
+
+export default function Form(/*{ onSubmit }*/) {
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const handleChange = ({ target: { dataset, value } }) => {
-    switch (dataset.id) {
-      case 'name':
-        setName(value);
-        break;
-      case 'phoneNumber':
-        setPhoneNumber(value);
-        break;
-      default:
-        throw new Error(`there are no ${dataset.id} `);
-    }
-  };
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
+  const addContact = newContact => dispatch(addContactR(newContact));
 
   const handleSubmit = e => {
     e.preventDefault();
 
     if (name.length > 0 && phoneNumber.length > 0) {
-      onSubmit({
+      if (
+        contacts.some(contact => {
+          return contact.name.includes(name);
+        })
+      ) {
+        return alert(`${name} is already in contacts`);
+      }
+      addContact({
         id: uuidv4(),
         name,
         phoneNumber,
@@ -31,12 +33,6 @@ export default function Form({ onSubmit }) {
       resetForm();
     }
   };
-
-  function resetForm() {
-    setName('');
-    setPhoneNumber('');
-  }
-
   return (
     <form className={s.form} onSubmit={handleSubmit}>
       <label className={s.label}>
@@ -45,8 +41,9 @@ export default function Form({ onSubmit }) {
           type="text"
           className={s.input}
           value={name}
-          onChange={handleChange}
-          data-id="name"
+          onChange={e => {
+            setName(e.target.value);
+          }}
         />
       </label>
       <label className={s.label}>
@@ -55,8 +52,9 @@ export default function Form({ onSubmit }) {
           type="text"
           className={s.input}
           value={phoneNumber}
-          onChange={handleChange}
-          data-id="phoneNumber"
+          onChange={e => {
+            setPhoneNumber(e.target.value);
+          }}
         />
       </label>
       <button type="submit" className={s.btn}>
@@ -64,4 +62,9 @@ export default function Form({ onSubmit }) {
       </button>
     </form>
   );
+
+  function resetForm() {
+    setName('');
+    setPhoneNumber('');
+  }
 }

@@ -1,4 +1,4 @@
-import { createReducer } from '@reduxjs/toolkit';
+import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import {
   addContactR,
   deleteContactR,
@@ -13,34 +13,54 @@ const testContacts = [
   { id: 'id-4', name: 'Annie Copeland', phoneNumber: '227-91-26' },
 ];
 
-const initialState = {
-  contacts: testContacts,
-  filterQ: '',
-};
+const contactsReducer = createReducer(testContacts, {
+  [addContactR]: (state, { payload }) => [...state, payload],
+
+  [deleteContactR]: (state, { payload }) => {
+    const newContactsArray = state.filter(({ id }) => id !== payload);
+    return newContactsArray;
+  },
+
+  [setContactR]: (state, { payload }) => payload,
+});
+
+const filterReducer = createReducer('', {
+  [setFilterR]: (state, { payload }) => payload,
+});
+
+const phonebookReducer = combineReducers({
+  contacts: contactsReducer,
+  filterQ: filterReducer,
+});
+
+// const initialState = {
+//   contacts: testContacts,
+//   filterQ: '',
+// };
 
 // redux toolkit
 // =============================
-const phonebookReducer = createReducer(initialState, {
-  [addContactR]: (state, { payload }) => ({
-    ...state,
-    contacts: [...state.contacts, payload],
-  }),
-  [deleteContactR]: (state, { payload }) => {
-    const newContactsArray = state.contacts.filter(({ id }) => id !== payload);
-    return {
-      ...state,
-      contacts: newContactsArray,
-    };
-  },
-  [setContactR]: (state, { payload }) => ({
-    ...state,
-    contacts: [...payload],
-  }),
-  [setFilterR]: (state, { payload }) => ({
-    ...state,
-    filterQ: payload,
-  }),
-});
+// const phonebookReducer = createReducer(initialState, {
+//   [addContactR]: (state, { payload }) => ({
+//     ...state,
+//     contacts: [...state.contacts, payload],
+//   }),
+//   [deleteContactR]: (state, { payload }) => {
+//     const newContactsArray = state.contacts.filter(({ id }) => id !== payload);
+//     return {
+//       ...state,
+//       contacts: newContactsArray,
+//     };
+//   },
+//   [setContactR]: (state, { payload }) => ({
+//     ...state,
+//     contacts: [...payload],
+//   }),
+//   [setFilterR]: (state, { payload }) => ({
+//     ...state,
+//     filterQ: payload,
+//   }),
+// });
 
 // vanila redux
 // ======================================
