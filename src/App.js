@@ -4,6 +4,7 @@ import Form from './Components/Form/Form';
 import ContactList from './Components/ContactList/ContactList';
 import Filter from './Components/Filter/Filter';
 import { useDispatch, useSelector } from 'react-redux';
+import * as contactsOperations from './redux/phonebook/phonebook-operations';
 import { setContactR } from './redux/phonebook/phonebook-actions';
 import { getContacts } from './redux/phonebook/phonebook-selectors';
 
@@ -14,16 +15,21 @@ function App() {
 
   // get items from ls on first render
   useEffect(() => {
-    if (localStorage.getItem('contacts') !== null) {
-      const data = JSON.parse(localStorage.getItem('contacts'));
-      setContacts(data);
-    }
-  }, []);
+    dispatch(contactsOperations.fetchContacts());
+    // if (localStorage.getItem('contacts') !== null) {
+    //   const data = JSON.parse(localStorage.getItem('contacts'));
+    //   setContacts(data);
+    // }
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   setContacts(getContactsFromDB());
+  // }, []);
 
   // add items to ls
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  // useEffect(() => {
+  //   localStorage.setItem('contacts', JSON.stringify(contacts));
+  // }, [contacts]);
 
   return (
     <main className="container">

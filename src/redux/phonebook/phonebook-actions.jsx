@@ -7,26 +7,18 @@ const deleteContactR = createAction('phonebook/deleteContact');
 const setContactR = createAction('phonebook/setContacts');
 const setFilterR = createAction('phonebook/setFilter');
 
-// vanila redux
+// Async actions
 // ==========================
-// const addContactR = value => ({
-//   type: 'phonebook/addContact',
-//   payload: value,
-// });
+const fetchContactsRequest = createAction('phonebook/fetchBooks/pending');
+const fetchContactsSuccess = createAction('phonebook/fetchBooks/fullfilled');
+const fetchContactsError = createAction('phonebook/fetchBooks/rejected');
 
-// const deleteContactR = contactId => ({
-//   type: 'phonebook/deleteContact',
-//   payload: contactId,
-// });
-
-// const setContactR = contactsArr => ({
-//   type: 'phonebook/setContacts',
-//   payload: contactsArr,
-// });
-
-// const setFilterR = value => ({
-//   type: 'phonebook/setFilter',
-//   payload: value,
-// });
-
-export { addContactR, deleteContactR, setFilterR, setContactR };
+export {
+  addContactR,
+  deleteContactR,
+  setFilterR,
+  setContactR,
+  fetchContactsRequest,
+  fetchContactsSuccess,
+  fetchContactsError,
+};
