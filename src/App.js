@@ -5,10 +5,12 @@ import ContactList from './Components/ContactList/ContactList';
 import Filter from './Components/Filter/Filter';
 import { useDispatch, useSelector } from 'react-redux';
 import * as contactsOperations from './redux/phonebook/phonebook-operations';
-import { setContactR } from './redux/phonebook/phonebook-actions';
+import { phonebookActions } from 'redux/phonebook';
 import { getContacts } from './redux/phonebook/phonebook-selectors';
 
 function App() {
+  const { setContactR } = phonebookActions;
+
   const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
   const setContacts = contactsArr => dispatch(setContactR(contactsArr));

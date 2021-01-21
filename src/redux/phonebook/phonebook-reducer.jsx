@@ -1,22 +1,13 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
-import {
+import { fetchContacts } from './phonebook-operations';
+import { phonebookActions } from 'redux/phonebook';
+
+const {
   addContactR,
   deleteContactR,
   setFilterR,
   setContactR,
-  fetchContactsRequest,
-  fetchContactsSuccess,
-  fetchContactsError,
-} from './phonebook-actions';
-
-import { getContacts } from '../../service/request';
-
-const testContacts = [
-  // { id: 'id-1', name: 'Rosie Simpson', phoneNumber: '459-12-56' },
-  // { id: 'id-2', name: 'Hermione Kline', phoneNumber: '443-89-12' },
-  // { id: 'id-3', name: 'Eden Clements', phoneNumber: '645-17-79' },
-  // { id: 'id-4', name: 'Annie Copeland', phoneNumber: '227-91-26' },
-];
+} = phonebookActions;
 
 //  use json-server
 const contactsReducer = createReducer([], {
@@ -28,21 +19,21 @@ const contactsReducer = createReducer([], {
   },
 
   [setContactR]: (_, { payload }) => payload,
-  [fetchContactsSuccess]: (_, { payload }) => payload,
+  [fetchContacts.fulfilled]: (_, { payload }) => payload,
 });
 
 const filterReducer = createReducer('', {
-  [setFilterR]: (state, { payload }) => payload,
+  [setFilterR]: (_, { payload }) => payload,
 });
 
 const isLoading = createReducer(false, {
-  [fetchContactsRequest]: () => true,
-  [fetchContactsSuccess]: () => false,
-  [fetchContactsError]: () => false,
+  [fetchContacts.pending]: () => true,
+  [fetchContacts.fulfilled]: () => false,
+  [fetchContacts.rejected]: () => false,
 });
 
 const errorMessage = createReducer(null, {
-  [fetchContactsError]: (_, { payload }) => payload.message,
+  [fetchContacts.rejected]: (_, { payload }) => payload.message,
 });
 
 const phonebookReducer = combineReducers({

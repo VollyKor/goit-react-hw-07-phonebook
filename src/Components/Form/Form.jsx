@@ -1,18 +1,17 @@
 import s from './Form.module.css';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-
-import { getContacts } from '../../redux/phonebook/phonebook-selectors';
-import { addContactR } from '../../redux/phonebook/phonebook-actions';
+import { phonebookSelectors } from 'redux/phonebook';
 import { useSelector, useDispatch } from 'react-redux';
+import { request } from 'service';
+import { phonebookOperations } from 'redux/phonebook';
 
 export default function Form(/*{ onSubmit }*/) {
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const contacts = useSelector(getContacts);
+  const contacts = useSelector(phonebookSelectors.getContacts);
   const dispatch = useDispatch();
-  const addContact = newContact => dispatch(addContactR(newContact));
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -25,12 +24,22 @@ export default function Form(/*{ onSubmit }*/) {
       ) {
         return alert(`${name} is already in contacts`);
       }
-      addContact({
-        id: uuidv4(),
-        name,
-        phoneNumber,
-      });
-      resetForm();
+
+      const response = async () => {
+        const response = await request.addContact({
+          id: uuidv4(),
+          name,
+          phoneNumber,
+        });
+        if (response.status === 201) {
+          dispatch(phonebookOperations.fetchContacts());
+          resetForm();
+        } else {
+          alert('someting goes wrong');
+        }
+        return response;
+      };
+      response();
     }
   };
   return (

@@ -1,16 +1,26 @@
-import {
-  fetchContactsRequest,
-  fetchContactsSuccess,
-  fetchContactsError,
-} from './phonebook-actions';
-import { getContacts } from '../../service/request';
+import { request } from 'service';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
-export const fetchContacts = () => async dispatch => {
-  dispatch(fetchContactsRequest());
-  try {
-    const contacts = await getContacts();
-    dispatch(fetchContactsSuccess(contacts.data));
-  } catch (error) {
-    dispatch(fetchContactsError(error));
-  }
-};
+export const fetchContacts = createAsyncThunk(
+  'phonebook/fetchBooks',
+  async () => {
+    try {
+      const contacts = await request.getContacts();
+      return contacts.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+);
+
+// export const addContact = createAsyncThunk(
+//   'phonebook/addContact',
+//   async contactObj => {
+//     try {
+//       const response = await request.addContact(contactObj);
+//       return response;
+//     } catch (error) {
+//       throw error;
+//     }
+//   },
+// );
