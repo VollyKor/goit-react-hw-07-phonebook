@@ -25,7 +25,7 @@ export default function ContactList() {
       <ul className={s.list}>
         {visibleContatcs.map(el => {
           return (
-            <li className={s.item} key={el.id}>
+            <li tabIndex="0" className={s.item} key={el.id}>
               <p className={s.itemValue}>
                 <span> {el.name}: </span>
                 <span>{el.phoneNumber}</span>
